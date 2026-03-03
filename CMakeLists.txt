@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.22)
 project(WaveFilet VERSION 0.1.0)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # JUCE is included as a git submodule at deps/JUCE.
 # Run: git submodule update --init --recursive
 add_subdirectory(deps/JUCE)

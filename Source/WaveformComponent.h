@@ -48,6 +48,11 @@ public:
     //==============================================================================
     void setSource (const juce::File& file);
 
+    // Rebuilds the AudioThumbnail from the processor's already-loaded file.
+    // Call this after session restore, when the processor has audio but
+    // setSource() was never invoked through the UI path.
+    void restoreFromProcessor();
+
 private:
     //==============================================================================
     // Returns the index of the slice marker whose handle contains `pos`, or -1.
@@ -67,10 +72,6 @@ private:
     bool isDragOver = false;    // file drag hover highlight
 
     int draggedSliceIndex = -1; // index being dragged, or -1
-
-    // The normalized position that was under the cursor when a drag started.
-    // Used to detect whether a mouseDown was a drag or just a click.
-    double dragStartNorm = 0.0;
 
     static constexpr int handleRadius  = 6;  // px radius of the grab handle circle
     static constexpr int hitTolerance  = 8;  // px hit-test radius

@@ -17,7 +17,7 @@ public:
 private:
     WaveFiletProcessor& audioProcessor;
 
-    juce::AudioFormatManager   formatManager;
+    // Format manager is owned by the processor; we share it here for the thumbnail.
     juce::AudioThumbnailCache  thumbnailCache { 5 };
 
     WaveformComponent waveformComponent;

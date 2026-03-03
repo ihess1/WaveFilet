@@ -3,9 +3,8 @@
 WaveFiletEditor::WaveFiletEditor (WaveFiletProcessor& p)
     : AudioProcessorEditor (&p),
       audioProcessor (p),
-      waveformComponent (p, formatManager, thumbnailCache)
+      waveformComponent (p, p.getFormatManager(), thumbnailCache)
 {
-    formatManager.registerBasicFormats();
 
     addAndMakeVisible (waveformComponent);
 
@@ -17,10 +16,16 @@ WaveFiletEditor::WaveFiletEditor (WaveFiletProcessor& p)
     fileLabel.setFont (juce::Font (13.0f));
     addAndMakeVisible (fileLabel);
 
-    // Restore filename label from processor state
+    // After session restore the processor already has audio loaded but the
+    // thumbnail was never populated (setSource is only called via UI gestures).
+    // restoreFromProcessor() rebuilds the thumbnail from the existing file so
+    // the waveform is visible immediately on re-open.
     if (audioProcessor.hasAudio())
+    {
         fileLabel.setText (audioProcessor.getLoadedFile().getFileName(),
                            juce::dontSendNotification);
+        waveformComponent.restoreFromProcessor();
+    }
 
     setSize (700, 300);
 }
