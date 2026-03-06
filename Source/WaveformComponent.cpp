@@ -111,7 +111,6 @@ void WaveformComponent::mouseDown (const juce::MouseEvent& e)
     {
         // Begin dragging an existing marker
         draggedSliceIndex = hitIndex;
-        dragStartNorm     = processor.getSlicePositions()[hitIndex];
         return;
     }
 
@@ -129,8 +128,10 @@ void WaveformComponent::mouseDrag (const juce::MouseEvent& e)
         return;
 
     processor.moveSlice (draggedSliceIndex, xToNormalized (e.x));
-    // After sort, the index may have changed — find it again by proximity
-    // (simple approach: keep tracking by searching nearest to current x)
+    // moveSlice() re-sorts slicePositions, so draggedSliceIndex may now point
+    // to a different element. Re-acquire the index by finding the slice closest
+    // to the cursor — the slice we just moved will always be nearest because we
+    // placed it exactly at the cursor position and no other slice is there.
     const double currentNorm = xToNormalized (e.x);
     const auto& slices = processor.getSlicePositions();
     double minDist = std::numeric_limits<double>::max();
@@ -224,6 +225,12 @@ void WaveformComponent::setSource (const juce::File& file)
     processor.loadFile (file);
     thumbnail.setSource (new juce::FileInputSource (file));
     repaint();
+}
+
+void WaveformComponent::restoreFromProcessor()
+{
+    if (processor.hasAudio())
+        thumbnail.setSource (new juce::FileInputSource (processor.getLoadedFile()));
 }
 
 void WaveformComponent::changeListenerCallback (juce::ChangeBroadcaster*)

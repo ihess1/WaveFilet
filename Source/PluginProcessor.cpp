@@ -63,14 +63,24 @@ void WaveFiletProcessor::loadFile (const juce::File& file)
     if (reader == nullptr)
         return;
 
+    // Slice positions from any previously loaded file are not meaningful
+    // relative to a new file's timeline, so reset them on every load.
+    slicePositions.clear();
+
     const auto maxSeconds = 600.0; // 10-minute cap
     const auto maxSamples = static_cast<int> (
         juce::jmin (reader->lengthInSamples,
                     static_cast<juce::int64> (maxSeconds * reader->sampleRate)));
 
+    // Extra guard samples beyond fileLength provide headroom for future
+    // cubic/sinc interpolation during pitched or time-stretched playback.
+    // fileLength intentionally does NOT include these guard samples — they
+    // are never "valid" audio and should not be iterated over by playback code.
+    static constexpr int kInterpolationGuardSamples = 4;
+
     audioBuffer.setSize (juce::jmin (2, static_cast<int> (reader->numChannels)),
-                         maxSamples + 4);
-    reader->read (&audioBuffer, 0, maxSamples + 4, 0, true, true);
+                         maxSamples + kInterpolationGuardSamples);
+    reader->read (&audioBuffer, 0, maxSamples + kInterpolationGuardSamples, 0, true, true);
 
     fileSampleRate = reader->sampleRate;
     fileLength     = maxSamples;
