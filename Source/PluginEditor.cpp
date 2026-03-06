@@ -1,4 +1,5 @@
 #include "PluginEditor.h"
+#include "Theme.h"
 
 WaveFiletEditor::WaveFiletEditor (WaveFiletProcessor& p)
     : AudioProcessorEditor (&p),
@@ -13,7 +14,8 @@ WaveFiletEditor::WaveFiletEditor (WaveFiletProcessor& p)
 
     fileLabel.setText ("No file loaded", juce::dontSendNotification);
     fileLabel.setColour (juce::Label::textColourId, juce::Colours::lightgrey);
-    fileLabel.setFont (juce::Font (13.0f));
+    // juce::Font(float) is deprecated in JUCE 8; use FontOptions instead (Issue #5).
+    fileLabel.setFont (juce::Font (juce::FontOptions{}.withHeight (13.0f)));
     addAndMakeVisible (fileLabel);
 
     // After session restore the processor already has audio loaded but the
@@ -35,7 +37,7 @@ WaveFiletEditor::~WaveFiletEditor() {}
 //==============================================================================
 void WaveFiletEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (juce::Colour (0xff16213e));
+    g.fillAll (Theme::editor_background);
 }
 
 void WaveFiletEditor::resized()
