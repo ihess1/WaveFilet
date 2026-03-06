@@ -5,28 +5,44 @@
 #include "PluginProcessor.h"
 #include "WaveformComponent.h"
 
-class WaveFiletEditor final : public juce::AudioProcessorEditor
+class WaveFiletEditor final : public juce::AudioProcessorEditor,
+                               public juce::ChangeListener
 {
 public:
     explicit WaveFiletEditor (WaveFiletProcessor&);
     ~WaveFiletEditor() override;
 
-    void paint (juce::Graphics&) override;
-    void resized() override;
+    void paint   (juce::Graphics&) override;
+    void resized () override;
+
+    // ChangeListener — reacts to processor file-load events (updates file label)
+    void changeListenerCallback (juce::ChangeBroadcaster*) override;
 
 private:
     WaveFiletProcessor& audioProcessor;
 
-    // Format manager is owned by the processor; we share it here for the thumbnail.
-    juce::AudioThumbnailCache  thumbnailCache { 5 };
+    juce::AudioThumbnailCache thumbnailCache { 5 };
 
     WaveformComponent waveformComponent;
-    juce::TextButton  loadButton  { "Load File" };
-    juce::Label       fileLabel;
+
+    // Toolbar widgets
+    juce::TextButton loadButton  { "Load File" };
+    juce::Label      fileLabel;
+
+    // Phase 4: mode selector
+    juce::ComboBox   modeSelector;
+    juce::Label      modeLabel;
+    juce::Slider     fixedDivisionsSlider;
+    juce::Label      fixedDivisionsLabel;
+    juce::TextButton applyAutoButton { "Apply" };
+    juce::TextButton detectButton    { "Detect" };
 
     std::unique_ptr<juce::FileChooser> fileChooser;
 
-    void onLoadButtonClicked();
+    void onLoadButtonClicked ();
+    void onModeChanged       ();
+    void onApplyAutoClicked  ();
+    void updateModeWidgets   ();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveFiletEditor)
 };
