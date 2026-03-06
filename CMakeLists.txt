@@ -10,8 +10,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_subdirectory(deps/JUCE)
 
 juce_add_plugin(WaveFilet
-    PLUGIN_MANUFACTURER_CODE Wflt
-    PLUGIN_CODE Wflt
+    # Four-character codes required by the VST3 / AU specs.
+    # PLUGIN_MANUFACTURER_CODE must be unique to your company; register it at
+    # https://steinberg.help/vst3_dev_portal/pages/plugin-coding/ids.html before
+    # distribution.  It must also differ from PLUGIN_CODE (Issue #6).
+    PLUGIN_MANUFACTURER_CODE Ihss   # placeholder — register before distribution
+    PLUGIN_CODE WfSl                # WaveFilet Slicer
     COMPANY_NAME "WaveFilet"
     IS_SYNTH TRUE
     NEEDS_MIDI_INPUT TRUE
