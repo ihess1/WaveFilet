@@ -10,8 +10,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_subdirectory(deps/JUCE)
 
 juce_add_plugin(WaveFilet
-    PLUGIN_MANUFACTURER_CODE Wflt
-    PLUGIN_CODE Wflt
+    PLUGIN_MANUFACTURER_CODE Ihss
+    PLUGIN_CODE WfSl
     COMPANY_NAME "WaveFilet"
     IS_SYNTH TRUE
     NEEDS_MIDI_INPUT TRUE
@@ -23,7 +23,8 @@ target_sources(WaveFilet
     PRIVATE
         Source/PluginProcessor.cpp
         Source/PluginEditor.cpp
-        Source/WaveformComponent.cpp)
+        Source/WaveformComponent.cpp
+        Source/Theme.h)
 
 target_compile_definitions(WaveFilet
     PUBLIC
